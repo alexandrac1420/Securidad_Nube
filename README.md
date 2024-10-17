@@ -79,8 +79,8 @@ The Property Management System allows users to manage real estate properties by 
 
 1. Clone the repository and navigate into the project directory:
     ```sh
-    git clone https://github.com/alexandrac1420/Patrones_Arquitecturales.git
-    cd Patrones_Arquitecturales
+    git clone https://github.com/alexandrac1420/Securidad_Nube.git
+    cd Securidad_Nube
     ```
 
 2. Start the application with Docker Compose:
@@ -269,7 +269,7 @@ This ensures that the frontend communicates with the backend hosted on AWS EC2, 
 
     
 ## Architecture
-![Architecture Diagram](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/Arquitectura.png)
+![Architecture Diagram](https://github.com/alexandrac1420/Securidad_Nube/blob/master/Pictures/Arquitectura.png)
 ### Overview
 
 The Property Management System is designed using a client-server architecture that consists of three main components: the frontend, the Spring Boot backend, and the MySQL database. The system supports secure communication, using HTTPS for data transmission between the frontend and backend, as well as secure database interactions through TLS connections. The architecture is designed to ensure scalability, security, and separation of concerns, with each component having a clearly defined role.
@@ -353,7 +353,7 @@ The Property Management System is designed using a client-server architecture th
 
 ## Class Diagram
 
-![Class Diagram](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/DiagramaClases.png)
+![Class Diagram](https://github.com/alexandrac1420/Securidad_Nube/blob/master/Pictures/DiagramaClases.png)
 
 
 ### Overview
@@ -560,7 +560,7 @@ In addition to the CRUD tests, the system includes security-related tests to ens
 - **Security Layer**: Tests ensure that CSRF protection is correctly enforced for all state-changing operations (POST, PUT, DELETE).
 
 
-![Test report](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/test.png)
+![Test report](https://github.com/alexandrac1420/Securidad_Nube/blob/master/Pictures/image.png)
 
 ## Docker Compose Configuration
 
