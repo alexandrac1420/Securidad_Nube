@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Propiedades</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="pizza.jpg" alt="Imagen de Propiedad" class="header-image">
+            <h1>Gestión de Propiedades Inmobiliarias</h1>
+        </header>
+
+        <section class="search-section">
+            <h2>Buscar Propiedades</h2>
+            <input type="text" id="searchQuery" placeholder="Buscar por dirección...">
+            <button onclick="searchProperties()">Buscar</button>
+        </section>
+
+        <section class="form-section">
+            <h2>Agregar o Actualizar Propiedades</h2>
+            <form id="propertyForm">
+                <div class="form-group">
+                    <label for="address">Dirección:</label>
+                    <input type="text" id="address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Precio:</label>
+                    <input type="number" id="price" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="size">Tamaño (m²):</label>
+                    <input type="number" id="size" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción:</label>
+                    <input type="text" id="description">
+                </div>
+
+                <button type="button" onclick="createProperty()" id="addButton">Agregar Propiedad</button>
+                <button type="button" onclick="updateProperty()" id="updateButton" style="display: none;">Actualizar Propiedad</button>
+                <button type="button" onclick="clearForm()">Limpiar Formulario</button>
+            </form>
+        </section>
+
+        <section class="property-list-section">
+            <h2>Lista de Propiedades</h2>
+            <table id="propertyTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Dirección</th>
+                        <th>Precio</th>
+                        <th>Tamaño (m²)</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="pagination">
+                <button onclick="prevPage()">Anterior</button>
+                <span id="pageInfo"></span>
+                <button onclick="nextPage()">Siguiente</button>
+            </div>
+        </section>
+
+        <button id="logoutButton">Cerrar Sesión</button>
+    </div>
+</body>
+</html>

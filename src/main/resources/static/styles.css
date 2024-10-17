@@ -1,0 +1,134 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #faf5ff; /* Lila claro para el fondo */
+    color: #4c3b76; /* Morado oscuro para el texto principal */
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff; /* Blanco para el fondo del contenedor */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 3px solid #c3b0e3; /* Borde lila */
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #5d3a9b; /* Púrpura fuerte para el título */
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 2em;
+    color: #7b4ac9; /* Morado intermedio para los subtítulos */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-section, .property-list-section {
+    margin-bottom: 40px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    color: #5d3a9b; /* Púrpura fuerte para los textos de los labels */
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #a682c1; /* Lila medio para el borde */
+    border-radius: 5px;
+    background-color: #f5e6ff; /* Fondo lila claro para los inputs */
+    color: #4c3b76; /* Texto morado oscuro */
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #7b4ac9; /* Color más vivo cuando el input está enfocado */
+    background-color: #ebe0ff; /* Lila aún más claro en foco */
+}
+
+button {
+    padding: 8px 15px;
+    background-color: #7a42a7; /* Botón púrpura más oscuro */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #663d8b; /* Púrpura más intenso al pasar el ratón */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #d7b8f4; /* Borde lila suave */
+}
+
+th {
+    background-color: #7b4ac9; /* Lila intermedio para la cabecera */
+    color: white;
+}
+
+td {
+    background-color: #f5e6ff; /* Lila claro para las celdas */
+    color: #4c3b76; /* Texto morado oscuro */
+}
+
+td button {
+    margin-right: 5px;
+}
+
+.logout-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #7a42a7; /* Púrpura oscuro para el fondo del botón */
+    color: white; /* Texto blanco */
+    text-decoration: none; /* Sin subrayado */
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none; /* Sin borde */
+}
+
+.logout-button:hover {
+    background-color: #663d8b; /* Púrpura más intenso al pasar el ratón */
+}
