@@ -1,8 +1,8 @@
-const apiUrl = 'http://localhost:8080';
+const apiUrl = 'https://serverspring.duckdns.org';
 
-let currentPage = 0;  // Página actual (comienza desde 0)
-const pageSize = 5;   // Tamaño de la página
-let totalPages = 0;   // Número total de páginas
+let currentPage = 0;  
+const pageSize = 5;   
+let totalPages = 0;   
 
 // Redireccionar a la página de login si no hay sesión iniciada
 window.addEventListener('load', function () {
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
-                credentials: 'include' // Enviar cookies para mantener la sesión
+                credentials: 'include' 
             })
             .then(response => {
                 if (response.ok) {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
-                credentials: 'include' // Enviar cookies para mantener la sesión
+                credentials: 'include' 
             })
             .then(response => {
                 if (response.ok) {
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // **Cerrar sesión**
 document.getElementById('logoutButton')?.addEventListener('click', function () {
-    localStorage.removeItem('loggedIn'); // Eliminar sesión
+    localStorage.removeItem('loggedIn'); 
     alert('Sesión cerrada');
     window.location.href = 'login.html';
 });
@@ -96,17 +96,17 @@ document.getElementById('searchQuery')?.addEventListener('input', function () {
 function loadProperties() {
     fetch(`${apiUrl}/properties?page=${currentPage}&size=${pageSize}`, {
         method: 'GET',
-        credentials: 'include' // Asegurar que se envíen las cookies
+        credentials: 'include' 
     })
     .then(response => {
         if (!response.ok) {
             throw new Error(`Error en la solicitud: ${response.status}`);
         }
-        return response.json();  // Devolver la lista de propiedades paginadas
+        return response.json();  
     })
     .then(data => {
-        updatePropertyTable(data.content);  // Procesar la lista paginada de propiedades
-        updatePagination(data);             // Actualizar la información de paginación
+        updatePropertyTable(data.content);  
+        updatePagination(data);             
     })
     .catch(error => {
         console.error('Error:', error);
@@ -117,7 +117,7 @@ function loadProperties() {
 // **Actualizar la tabla de propiedades**
 function updatePropertyTable(properties) {
     const propertyTableBody = document.querySelector('#propertyTable tbody');
-    propertyTableBody.innerHTML = ''; // Limpiar la tabla antes de añadir las propiedades
+    propertyTableBody.innerHTML = ''; 
 
     properties.forEach(property => {
         const row = document.createElement('tr');

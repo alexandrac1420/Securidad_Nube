@@ -132,3 +132,19 @@ td button {
 .logout-button:hover {
     background-color: #663d8b; /* Púrpura más intenso al pasar el ratón */
 }
+
+input[type="text"], input[type="number"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #a682c1; /* Lila medio para el borde */
+    border-radius: 5px;
+    background-color: #f5e6ff; /* Fondo lila claro para los inputs */
+    color: #4c3b76; /* Texto morado oscuro */
+}
+
+input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: #7b4ac9; /* Color más vivo cuando el input está enfocado */
+    background-color: #ebe0ff; /* Lila aún más claro en foco */
+}

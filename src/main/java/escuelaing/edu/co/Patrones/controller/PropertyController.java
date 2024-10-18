@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/properties")
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
+@CrossOrigin(origins = "https://serverfront.duckdns.org", allowCredentials = "true")
 public class PropertyController {
 
     @Autowired
