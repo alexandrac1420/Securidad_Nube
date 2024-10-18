@@ -221,9 +221,9 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 ---
 
-### 3. **Setting Up Apache Server for the Frontend**
+### 3. **Setting Up Apache Server for the Frontend and Backend**
 
-1. **Create an EC2 instance** for the frontend and install Apache:
+1. **Create an EC2 instance** and install Apache:
     ```bash
     sudo yum install httpd -y
     sudo systemctl start httpd
@@ -249,7 +249,7 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 ---
 
-### 4. **Configuring SSL for the Spring Boot Backend**
+### 4. **Configuring SSL for the Spring Boot Backend and FrontEnd**
 
 1. **Generate SSL certificate using Let's Encrypt on the backend instance**:
     Install Certbot and obtain the certificate:
@@ -258,7 +258,7 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
     sudo certbot certonly --manual --preferred-challenges dns -d serverspring.duckdns.org
     ```
 
-2. **Convert the SSL certificate to PKCS12 for Spring Boot**:
+2. **Convert the SSL certificate to PKCS12 for Spring Boot** this step and the next ones is only for the backend:
     ```bash
     sudo openssl pkcs12 -export -in /etc/letsencrypt/live/serverspring.duckdns.org/fullchain.pem     -inkey /etc/letsencrypt/live/serverspring.duckdns.org/privkey.pem     -out keystore.p12 -name springboot     -CAfile /etc/letsencrypt/live/serverspring.duckdns.org/chain.pem -caname root
     ```
@@ -280,7 +280,7 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 
 ---
-## 5. **Using DuckDNS for Domain Setup**
+### 5. **Using DuckDNS for Domain Setup**
 
 1. **Go to [DuckDNS](https://www.duckdns.org/domains)** and register for a free account.
 
@@ -295,7 +295,7 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 ### 6. **Configuring VirtualHost for Apache**
 
-1. **Edit the Apache VirtualHost configuration**:
+1. **Edit the Apache VirtualHost configuration** for the frontend and backend:
     ```bash
     sudo nano /etc/httpd/conf.d/serverfront.conf
     ```
@@ -430,10 +430,7 @@ fetch(`${apiBaseUrl}/users/register`, {
     headers: {
         'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-        username: 'testuser',
-        password: 'password123'
-    }),
+    body: JSON.stringify({username,password}),
     credentials: 'include' // Ensure credentials (cookies) are included
 })
 .then(response => response.json())
