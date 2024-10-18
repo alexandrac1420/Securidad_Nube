@@ -27,7 +27,7 @@ public class SecurityConfig {
 
         http.cors().and().csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/properties", "/properties/**").authenticated()
+                .requestMatchers("/").authenticated()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
