@@ -115,9 +115,9 @@ By using `BCrypt`, the system ensures that password storage adheres to modern se
 
 5. Access the application:
     ```sh
-    http://localhost:8443
+    https://localhost:8443
     ```
-
+    ![localhot](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/localhost%20(1).gif)
 ---
 ## Running the Project on AWS
 
