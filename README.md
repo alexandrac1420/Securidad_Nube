@@ -79,8 +79,8 @@ The Property Management System allows users to manage real estate properties by 
 
 1. Clone the repository and navigate into the project directory:
     ```sh
-    git clone https://github.com/alexandrac1420/Securidad_Nube.git
-    cd Securidad_Nube
+    git clone https://github.com/alexandrac1420/Seguridad_Nube.git
+    cd Seguridad_Nube
     ```
 
 2. Start the application with Docker Compose:
@@ -88,7 +88,7 @@ The Property Management System allows users to manage real estate properties by 
     docker-compose up -d
     ```
 
-    This will set up both the Spring Boot backend and a MySQL container locally. The backend will be available at `http://localhost:8080`, and the MySQL instance will run inside a Docker container.
+    This will set up both the Spring Boot backend and a MySQL container locally. The backend will be available at `http://localhost:8443`, and the MySQL instance will run inside a Docker container.
 
 3. Build the project using Maven:
     ```sh
@@ -102,46 +102,45 @@ The Property Management System allows users to manage real estate properties by 
 
 5. Access the application:
     ```sh
-    http://localhost:8080
+    http://localhost:8443
     ```
 
 ---
-
 ## Running the Project on AWS
 
-In this setup, two **EC2 instances** were used: one for running **MySQL** and another for running the **Spring Boot backend**.
+This project uses two **EC2 instances**: one for running **MySQL** and another for running the **Spring Boot backend**. Below are the detailed steps for setting up both instances, along with the Apache server for the frontend.
+
+---
 
 ### 1. **Setting Up MySQL on EC2**
 
-1. **Create an EC2 instance** on AWS for the MySQL database, using Amazon Linux 2 as the operating system.
+1. **Create an EC2 instance** for the MySQL database using Amazon Linux 2 as the operating system.
 
 2. **Connect to the EC2 instance**:
-    ```sh
+    ```bash
     ssh -i your-key.pem ec2-user@<mysql-ec2-instance-ip>
     ```
 
 3. **Install MySQL**:
-    ```sh
+    ```bash
     sudo yum update -y
     sudo yum install -y https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
     sudo yum install -y mysql-community-server
     ```
-    ![install](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/install.png)
 
 4. **Start MySQL** and enable it to run at boot:
-    ```sh
+    ```bash
     sudo systemctl start mysqld
     sudo systemctl enable mysqld
     ```
 
 5. **Get the MySQL temporary password**:
-    ```sh
+    ```bash
     sudo grep 'temporary password' /var/log/mysqld.log
     ```
-    ![passwprd](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/contrase%C3%B1aTemporal.png)
 
 6. **Secure the MySQL installation**:
-    ```sh
+    ```bash
     sudo mysql_secure_installation
     ```
 
@@ -153,83 +152,166 @@ In this setup, two **EC2 instances** were used: one for running **MySQL** and an
     FLUSH PRIVILEGES;
     ```
 
-8. **Allow external connections** to MySQL by editing the MySQL config file:
-    ```sh
+8. **Allow external connections** to MySQL:
+    Edit the MySQL config file:
+    ```bash
     sudo nano /etc/my.cnf
     ```
     Add the following line under `[mysqld]`:
-    ```sh
+    ```bash
     bind-address = 0.0.0.0
     ```
-    ![cnf](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/cnf.png)
-   
-    Then, restart MySQL:
-    ```sh
+
+9. **Restart MySQL**:
+    ```bash
     sudo systemctl restart mysqld
     ```
-9. **Verify MySQL is Running on Port 3306 and Update AWS Security Groups**:
-   After setting the `bind-address`, verify that MySQL is running on port `3306` using:
-   ```sh
-   sudo netstat -tuln | grep 3306
+
+10. **Verify MySQL is running on port 3306**:
+    ```bash
+    sudo netstat -tuln | grep 3306
     ```
-Ensure port `3306` is open in the AWS Security Group by allowing inbound traffic for MySQL. Similarly, allow port `8080` for the Spring Boot backend to enable external access. This ensures the database and backend services are reachable from outside the EC2 instances.
 
+11. **Update AWS Security Groups**:
+    Ensure port `3306` is open for the MySQL EC2 instance to allow external connections. Similarly, ensure port `8080` is open for the Spring Boot backend to enable external access.
 
-### 2. **Setting Up Spring Boot Backend on a Different EC2 Instance**
+---
 
-1. **Create another EC2 instance** for the backend and connect to it via SSH:
-    ```sh
+### 2. **Setting Up Spring Boot Backend on Another EC2 Instance**
+
+1. **Create another EC2 instance** for the backend and connect via SSH:
+    ```bash
     ssh -i your-key.pem ec2-user@<backend-ec2-instance-ip>
     ```
 
 2. **Install Java and Maven**:
-    ```sh
+    ```bash
     sudo yum install java-17-amazon-corretto -y
     sudo yum install maven -y
     ```
 
-3. **Transfer the JAR file** to the EC2 instance using **SFTP**:
+3. **Transfer the JAR file** to the EC2 instance using SFTP:
    
-   First, connect to the EC2 instance using SFTP with your private key:
-   ```sh
+   Connect using SFTP with your private key:
+   ```bash
    sftp -i your-key.pem ec2-user@<backend-ec2-instance-ip>
    ```
-   Once connected, use the `put` command to upload the JAR file to the EC2 instance:
-    
-   ```sh
+   Use the `put` command to upload the JAR file:
+   ```bash
    put target/Patrones-0.0.1-SNAPSHOT.jar
    ```
-   This will upload the JAR file to the EC2 instance. You can confirm the file is in the     instance by listing the directory contents:
-    ```sh
-   ls
-   ```
-    After executing `ls`, you should see `Patrones-0.0.1-SNAPSHOT.jar` listed, indicating the file has been successfully transferred.
 
-   
-
-5. **Run the Spring Boot application**:
-    ```sh
-    java -jar PropertyManagement-0.0.1-SNAPSHOT.jar
+4. **Run the Spring Boot application**:
+    ```bash
+    java -jar Patrones-0.0.1-SNAPSHOT.jar
     ```
 
 ---
 
-### 3. **Setting Up Apache Server for Frontend**
+### 3. **Setting Up Apache Server for the Frontend**
 
 1. **Create an EC2 instance** for the frontend and install Apache:
-    ```sh
+    ```bash
     sudo yum install httpd -y
     sudo systemctl start httpd
+    sudo systemctl enable httpd
     ```
 
-2. **Configure Apache to serve the frontend over HTTPS**with TLS by generating a self-signed certificate or using Let's Encrypt:
-    ```sh
-    sudo certbot --apache
+2. **Set up HTTPS with Let's Encrypt**:
+    Install Certbot and configure Apache to serve content over HTTPS:
+    ```bash
+    sudo yum install certbot python3-certbot-apache -y
+    sudo certbot --apache -d serverfront.duckdns.org
+    ```
+    This will automatically configure Apache to use the Let's Encrypt certificate.
+
+3. **Deploy frontend files**:
+    Copy your frontend files (HTML, CSS, JS) to `/var/www/html/`:
+    ```bash
+    sudo cp -r /path/to/your/frontend/* /var/www/html/
     ```
 
-3. **Deploy frontend files** (HTML, CSS, JS) to /var/www/html/:
+4. **Ensure the firewall allows HTTPS traffic**:
+    Ensure that port `443` is open for the Apache server in the AWS Security Group.
 
+---
 
+### 4. **Configuring SSL for the Spring Boot Backend**
+
+1. **Generate SSL certificate using Let's Encrypt on the backend instance**:
+    Install Certbot and obtain the certificate:
+    ```bash
+    sudo yum install certbot -y
+    sudo certbot certonly --manual --preferred-challenges dns -d serverspring.duckdns.org
+    ```
+
+2. **Convert the SSL certificate to PKCS12 for Spring Boot**:
+    ```bash
+    sudo openssl pkcs12 -export -in /etc/letsencrypt/live/serverspring.duckdns.org/fullchain.pem     -inkey /etc/letsencrypt/live/serverspring.duckdns.org/privkey.pem     -out keystore.p12 -name springboot     -CAfile /etc/letsencrypt/live/serverspring.duckdns.org/chain.pem -caname root
+    ```
+
+3. **Configure Spring Boot to use the SSL certificate**:
+    In your `application.properties` file, add the following configuration:
+    ```properties
+    server.port=8443
+    server.ssl.key-store=classpath:keystore.p12
+    server.ssl.key-store-password=your_password
+    server.ssl.key-store-type=PKCS12
+    server.ssl.key-alias=springboot
+    ```
+
+4. **Open port 8443**:
+    Ensure that port `8443` is open in the AWS Security Group for the backend EC2 instance to allow HTTPS traffic.
+
+---
+## 5. **Using DuckDNS for Domain Setup**
+
+1. **Go to [DuckDNS](https://www.duckdns.org/domains)** and register for a free account.
+
+2. **Create a subdomain** for each of your EC2 instances, one for the frontend (e.g., `serverfront.duckdns.org`) and another for the backend (e.g., `serverspring.duckdns.org`).
+
+3. **Update your DNS records** on DuckDNS with the **public IP addresses** of your EC2 instances.
+
+4. Ensure the domains (`serverfront.duckdns.org` and `serverspring.duckdns.org`) are correctly mapped to the respective public IPs for accessing the frontend and backend via HTTPS.
+
+---
+
+### 6. **Configuring VirtualHost for Apache**
+
+1. **Edit the Apache VirtualHost configuration**:
+    ```bash
+    sudo nano /etc/httpd/conf.d/serverfront.conf
+    ```
+
+2. **Add the following configuration**:
+    ```apache
+    <VirtualHost *:80>
+        ServerName serverfront.duckdns.org
+        DocumentRoot /var/www/html
+
+        ErrorLog /var/log/httpd/serverfront_error.log
+        CustomLog /var/log/httpd/serverfront_access.log combined
+    </VirtualHost>
+
+    <VirtualHost *:443>
+        ServerName serverfront.duckdns.org
+        DocumentRoot /var/www/html
+
+        SSLEngine on
+        SSLCertificateFile /etc/letsencrypt/live/serverfront.duckdns.org/fullchain.pem
+        SSLCertificateKeyFile /etc/letsencrypt/live/serverfront.duckdns.org/privkey.pem
+
+        ErrorLog /var/log/httpd/serverfront_error_ssl.log
+        CustomLog /var/log/httpd/serverfront_access_ssl.log combined
+    </VirtualHost>
+    ```
+
+3. **Restart Apache** to apply changes:
+    ```bash
+    sudo systemctl restart httpd
+    ```
+
+---
 
 ## Additional Changes for AWS Deployment
 
@@ -263,7 +345,7 @@ This allows requests from different origins (e.g., the frontend running on a dif
 The API endpoint in `index.html` also needed to be updated to point to the public IP address of the **EC2 instance** running the backend instead of `localhost`. The updated `apiBaseUrl` in the frontend would look like this:
 
 ```javascript
-const apiBaseUrl = 'http://<backend-ec2-instance-ip>:8080/properties';
+const apiBaseUrl = 'http://<backend-ec2-instance-ip>:8443';
 ```
 This ensures that the frontend communicates with the backend hosted on AWS EC2, rather than a locally hosted backend.
 
