@@ -263,6 +263,9 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 4. **Open port 8443**:
     Ensure that port `8443` is open in the AWS Security Group for the backend EC2 instance to allow HTTPS traffic.
 
+   ![image](https://github.com/user-attachments/assets/8e3a380c-f72f-42e1-a794-10ba898f1831)
+
+
 ---
 ## 5. **Using DuckDNS for Domain Setup**
 
