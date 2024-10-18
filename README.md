@@ -646,8 +646,7 @@ In addition to the CRUD tests, the system includes security-related tests to ens
 - **Security Layer**: Tests ensure that CSRF protection is correctly enforced for all state-changing operations (POST, PUT, DELETE).
 
 
-![Test report](https://github.com/alexandrac1420/Securidad_Nube/blob/master/Pictures/image.png)
-
+![Test report](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/test.png)
 ## Docker Compose Configuration
 
 The `docker-compose.yml` file contains the configuration needed to run both the MySQL database and the Spring Boot backend in Docker containers. Below is an explanation of the key parts of the configuration:
