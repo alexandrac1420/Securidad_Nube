@@ -318,11 +318,11 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 ---
 
 
-# Additional Changes for AWS Deployment
+## Additional Changes for AWS Deployment
 
 During the deployment to AWS, certain configurations were updated to ensure seamless communication between the frontend and backend. The most significant changes involved updating the domains from localhost to the public DuckDNS domains for each EC2 instance, configuring CORS, and modifying the security settings. Below is the step-by-step breakdown of these updates.
 
-## 1. Modifications to application.properties in the Spring Boot Backend
+### 1. Modifications to application.properties in the Spring Boot Backend
 
 In the Spring Boot backend, the `application.properties` file was updated to point to the MySQL database running on the MySQL EC2 instance, using the DuckDNS domain:
 
@@ -334,7 +334,7 @@ spring.datasource.password=myP@ssw0rd123!
 
 This ensures the backend connects to the remote MySQL EC2 instance via its DuckDNS domain rather than trying to connect to a local database.
 
-## 2. CORS Configuration in `UserController` and `PropertyController`
+### 2. CORS Configuration in `UserController` and `PropertyController`
 
 Since the frontend and backend are hosted on different domains (the frontend on `serverfront.duckdns.org` and the backend on `serverspring.duckdns.org`), Cross-Origin Resource Sharing (CORS) needed to be configured.
 
@@ -358,7 +358,7 @@ public class PropertyController {
 
 This configuration ensures that the frontend (served by Apache) can send authenticated requests to the backend, allowing credentials such as session cookies to be included in the requests.
 
-## 3. CORS Configuration in SecurityConfig
+### 3. CORS Configuration in SecurityConfig
 
 The CORS configuration also needed to be handled at the security level in the `SecurityConfig` class. In Spring Security, the following adjustments were made to enable CORS and disable CSRF for simplicity in this environment:
 
@@ -405,7 +405,7 @@ This ensures that:
 - Credentials such as cookies or authentication tokens are allowed in cross-origin requests.
 - CSRF protection is disabled for simplicity, which is common in microservices that use JWT or similar tokens.
 
-## 4. Modifications to the Frontend
+### 4. Modifications to the Frontend
 
 The frontend, which is served by Apache on the frontend EC2 instance, had its API calls updated to point to the backend's DuckDNS domain (`serverspring.duckdns.org`). The following updates were made in the JavaScript files:
 
