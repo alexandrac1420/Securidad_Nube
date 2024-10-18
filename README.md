@@ -73,6 +73,19 @@ The Property Management System allows users to manage real estate properties by 
 6. **User Feedback**: The system displays success, error, and validation messages to provide feedback during property management operations.
 
 ---
+
+## Secure Login with Hashing
+
+In this system, user passwords are securely stored using hashing techniques to prevent storing plain text passwords. We utilize the `BCrypt` algorithm, which is a strong and widely-used password hashing function that incorporates a salt to protect against rainbow table attacks.
+
+When a user registers or updates their password, the system applies the `BCrypt` hashing algorithm before storing the password in the database. This ensures that even if the database is compromised, the actual passwords cannot be easily retrieved or decoded.
+
+Additionally, during login, the provided password is hashed and compared with the stored hash to authenticate users securely.
+
+By using `BCrypt`, the system ensures that password storage adheres to modern security standards.
+
+
+
 ## Running the Project Locally (with Docker)
 
 ### Steps to Run Locally:
