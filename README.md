@@ -2,7 +2,7 @@
 
 This project implements a CRUD (Create, Read, Update, Delete) system for managing real estate properties. It uses a Spring Boot backend and a frontend built with HTML, CSS, and JavaScript, along with a MySQL database. The project is deployed on AWS, with security features such as HTTPS via Apache for the frontend, and TLS for secure communication between the backend and frontend.
 
-![Funcionamiento localhost](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/localhost.gif)
+![AWS](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/Funcionamiento%20AWS.gif)
 
 ## Getting Started
 
@@ -73,6 +73,19 @@ The Property Management System allows users to manage real estate properties by 
 6. **User Feedback**: The system displays success, error, and validation messages to provide feedback during property management operations.
 
 ---
+
+## Secure Login with Hashing
+
+In this system, user passwords are securely stored using hashing techniques to prevent storing plain text passwords. We utilize the `BCrypt` algorithm, which is a strong and widely-used password hashing function that incorporates a salt to protect against rainbow table attacks.
+
+When a user registers or updates their password, the system applies the `BCrypt` hashing algorithm before storing the password in the database. This ensures that even if the database is compromised, the actual passwords cannot be easily retrieved or decoded.
+
+Additionally, during login, the provided password is hashed and compared with the stored hash to authenticate users securely.
+
+By using `BCrypt`, the system ensures that password storage adheres to modern security standards.
+
+
+
 ## Running the Project Locally (with Docker)
 
 ### Steps to Run Locally:
@@ -208,9 +221,9 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 ---
 
-### 3. **Setting Up Apache Server for the Frontend**
+### 3. **Setting Up Apache Server for the Frontend and Backend**
 
-1. **Create an EC2 instance** for the frontend and install Apache:
+1. **Create an EC2 instance** and install Apache:
     ```bash
     sudo yum install httpd -y
     sudo systemctl start httpd
@@ -236,7 +249,7 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 ---
 
-### 4. **Configuring SSL for the Spring Boot Backend**
+### 4. **Configuring SSL for the Spring Boot Backend and FrontEnd**
 
 1. **Generate SSL certificate using Let's Encrypt on the backend instance**:
     Install Certbot and obtain the certificate:
@@ -245,7 +258,7 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
     sudo certbot certonly --manual --preferred-challenges dns -d serverspring.duckdns.org
     ```
 
-2. **Convert the SSL certificate to PKCS12 for Spring Boot**:
+2. **Convert the SSL certificate to PKCS12 for Spring Boot** this step and the next ones is only for the backend:
     ```bash
     sudo openssl pkcs12 -export -in /etc/letsencrypt/live/serverspring.duckdns.org/fullchain.pem     -inkey /etc/letsencrypt/live/serverspring.duckdns.org/privkey.pem     -out keystore.p12 -name springboot     -CAfile /etc/letsencrypt/live/serverspring.duckdns.org/chain.pem -caname root
     ```
@@ -263,8 +276,11 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 4. **Open port 8443**:
     Ensure that port `8443` is open in the AWS Security Group for the backend EC2 instance to allow HTTPS traffic.
 
+   ![image](https://github.com/user-attachments/assets/8e3a380c-f72f-42e1-a794-10ba898f1831)
+
+
 ---
-## 5. **Using DuckDNS for Domain Setup**
+### 5. **Using DuckDNS for Domain Setup**
 
 1. **Go to [DuckDNS](https://www.duckdns.org/domains)** and register for a free account.
 
@@ -273,12 +289,13 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 3. **Update your DNS records** on DuckDNS with the **public IP addresses** of your EC2 instances.
 
 4. Ensure the domains (`serverfront.duckdns.org` and `serverspring.duckdns.org`) are correctly mapped to the respective public IPs for accessing the frontend and backend via HTTPS.
-
+   ![Domain back](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/serverSpring.png)
+   ![Domain front](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/serverFront.png)
 ---
 
 ### 6. **Configuring VirtualHost for Apache**
 
-1. **Edit the Apache VirtualHost configuration**:
+1. **Edit the Apache VirtualHost configuration** for the frontend and backend:
     ```bash
     sudo nano /etc/httpd/conf.d/serverfront.conf
     ```
@@ -313,41 +330,115 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 
 ---
 
+
 ## Additional Changes for AWS Deployment
 
-During the deployment to **AWS**, some adjustments were required to make the project work properly:
+During the deployment to AWS, certain configurations were updated to ensure seamless communication between the frontend and backend. The most significant changes involved updating the domains from localhost to the public DuckDNS domains for each EC2 instance, configuring CORS, and modifying the security settings. Below is the step-by-step breakdown of these updates.
 
-#### 1. **Modifications to `application.properties`**:
+### 1. Modifications to application.properties in the Spring Boot Backend
 
-In the **Spring Boot backend**, the `application.properties` file needed to be updated to connect to the **MySQL EC2 instance** instead of a local database. The following changes were made:
+In the Spring Boot backend, the `application.properties` file was updated to point to the MySQL database running on the MySQL EC2 instance, using the DuckDNS domain:
 
 ```properties
-spring.datasource.url=jdbc:mysql://<mysql-ec2-instance-ip>:3306/property_management
+spring.datasource.url=jdbc:mysql://serverfront.duckdns.org:3306/mydatabase
 spring.datasource.username=myuser
-spring.datasource.password=mypassword
+spring.datasource.password=myP@ssw0rd123!
 ```
-This configuration allows the Spring Boot application to connect to the remote MySQL database hosted on the other EC2 instance.
 
-### 2. CORS Configuration in `PropertyController`:
-To enable the frontend, hosted on a different origin (such as localhost or AWS EC2), to communicate with the backend, **Cross-Origin Resource Sharing (CORS)** needed to be enabled in the controller:
+This ensures the backend connects to the remote MySQL EC2 instance via its DuckDNS domain rather than trying to connect to a local database.
+
+### 2. CORS Configuration in `UserController` and `PropertyController`
+
+Since the frontend and backend are hosted on different domains (the frontend on `serverfront.duckdns.org` and the backend on `serverspring.duckdns.org`), Cross-Origin Resource Sharing (CORS) needed to be configured.
+
+In the Spring Boot controllers, the `@CrossOrigin` annotation was applied to allow requests from the frontend to the backend:
 
 ```java
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://serverfront.duckdns.org", allowCredentials = "true")
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    // User registration and authentication endpoints
+}
+
+@CrossOrigin(origins = "https://serverfront.duckdns.org", allowCredentials = "true")
 @RestController
 @RequestMapping("/properties")
 public class PropertyController {
-    // Controller code
+    // Property management endpoints
 }
 ```
-This allows requests from different origins (e.g., the frontend running on a different machine) to access the backend. Without enabling CORS, requests from different origins would be blocked by the browser, resulting in CORS policy errors.
 
-### 3. Modifications to `index.html`:
-The API endpoint in `index.html` also needed to be updated to point to the public IP address of the **EC2 instance** running the backend instead of `localhost`. The updated `apiBaseUrl` in the frontend would look like this:
+This configuration ensures that the frontend (served by Apache) can send authenticated requests to the backend, allowing credentials such as session cookies to be included in the requests.
+
+### 3. CORS Configuration in SecurityConfig
+
+The CORS configuration also needed to be handled at the security level in the `SecurityConfig` class. In Spring Security, the following adjustments were made to enable CORS and disable CSRF for simplicity in this environment:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/").authenticated()
+                .anyRequest().permitAll()
+            )
+            .formLogin(form -> form
+                .loginPage("/login.html")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
+        return http.build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); // Allow cookies and credentials
+        config.setAllowedOrigins(Arrays.asList("https://serverfront.duckdns.org")); // Allow frontend domain
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allowed HTTP methods
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Allowed headers
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+}
+```
+
+This ensures that:
+
+- CORS is enabled across the entire backend, allowing requests from the frontend (`serverfront.duckdns.org`).
+- Credentials such as cookies or authentication tokens are allowed in cross-origin requests.
+- CSRF protection is disabled for simplicity, which is common in microservices that use JWT or similar tokens.
+
+### 4. Modifications to the Frontend
+
+The frontend, which is served by Apache on the frontend EC2 instance, had its API calls updated to point to the backend's DuckDNS domain (`serverspring.duckdns.org`). The following updates were made in the JavaScript files:
 
 ```javascript
-const apiBaseUrl = 'http://<backend-ec2-instance-ip>:8443';
+const apiBaseUrl = 'https://serverspring.duckdns.org:8443';
+
+fetch(`${apiBaseUrl}/users/register`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({username,password}),
+    credentials: 'include' // Ensure credentials (cookies) are included
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ```
-This ensures that the frontend communicates with the backend hosted on AWS EC2, rather than a locally hosted backend.
+
+This ensures that the frontend communicates with the backend over HTTPS, using the correct domain.
 
     
 ## Architecture
@@ -642,8 +733,7 @@ In addition to the CRUD tests, the system includes security-related tests to ens
 - **Security Layer**: Tests ensure that CSRF protection is correctly enforced for all state-changing operations (POST, PUT, DELETE).
 
 
-![Test report](https://github.com/alexandrac1420/Securidad_Nube/blob/master/Pictures/image.png)
-
+![Test report](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/test.png)
 ## Docker Compose Configuration
 
 The `docker-compose.yml` file contains the configuration needed to run both the MySQL database and the Spring Boot backend in Docker containers. Below is an explanation of the key parts of the configuration:
@@ -691,7 +781,7 @@ This configuration allows you to run a MySQL database containerized within Docke
 
 ## Versioning
 
-I use [GitHub](https://github.com/) for versioning. For the versions available, see the [tags on this repository](https://github.com/alexandrac1420/Patrones_Arquitecturales.git).
+I use [GitHub](https://github.com/) for versioning. For the versions available, see the [tags on this repository](https://github.com/alexandrac1420/Seguridad_Nube.git).
 
 ## Authors
 
