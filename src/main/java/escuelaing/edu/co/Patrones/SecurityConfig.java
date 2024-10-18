@@ -47,7 +47,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // Permitir credenciales (cookies, auth headers)
-        config.setAllowedOrigins(Arrays.asList("https://serverfront.duckdns.org")); // Permitir solo el origen localhost:8080
+        config.setAllowedOrigins(Arrays.asList("https://localhost:8443")); // Permitir solo el origen localhost:8080
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos HTTP permitidos
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Headers permitidos
         source.registerCorsConfiguration("/**", config);

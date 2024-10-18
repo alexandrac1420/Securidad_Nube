@@ -9,7 +9,7 @@ import escuelaing.edu.co.Patrones.model.User;
 import escuelaing.edu.co.Patrones.service.UserService;
 
 
-@CrossOrigin(origins = "https://serverfront.duckdns.org", allowCredentials = "true")
+@CrossOrigin(origins = "https://localhost:8443", allowCredentials = "true")
 @RestController
 @RequestMapping("/users")
 public class UserController {
