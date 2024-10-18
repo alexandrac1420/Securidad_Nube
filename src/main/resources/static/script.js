@@ -1,4 +1,4 @@
-const apiUrl = 'https://serverspring.duckdns.org';
+const apiUrl = 'https://serverspring.duckdns.org:8443';
 
 let currentPage = 0;  
 const pageSize = 5;   
