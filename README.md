@@ -2,7 +2,7 @@
 
 This project implements a CRUD (Create, Read, Update, Delete) system for managing real estate properties. It uses a Spring Boot backend and a frontend built with HTML, CSS, and JavaScript, along with a MySQL database. The project is deployed on AWS, with security features such as HTTPS via Apache for the frontend, and TLS for secure communication between the backend and frontend.
 
-![Funcionamiento localhost](https://github.com/alexandrac1420/Patrones_Arquitecturales/blob/master/Pictures/localhost.gif)
+![AWS](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/Funcionamiento%20AWS.gif)
 
 ## Getting Started
 
@@ -273,7 +273,8 @@ This project uses two **EC2 instances**: one for running **MySQL** and another f
 3. **Update your DNS records** on DuckDNS with the **public IP addresses** of your EC2 instances.
 
 4. Ensure the domains (`serverfront.duckdns.org` and `serverspring.duckdns.org`) are correctly mapped to the respective public IPs for accessing the frontend and backend via HTTPS.
-
+   ![Domain back](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/serverSpring.png)
+   ![Domain front](https://github.com/alexandrac1420/Seguridad_Nube/blob/master/Pictures/serverFront.png)
 ---
 
 ### 6. **Configuring VirtualHost for Apache**
@@ -691,7 +692,7 @@ This configuration allows you to run a MySQL database containerized within Docke
 
 ## Versioning
 
-I use [GitHub](https://github.com/) for versioning. For the versions available, see the [tags on this repository](https://github.com/alexandrac1420/Patrones_Arquitecturales.git).
+I use [GitHub](https://github.com/) for versioning. For the versions available, see the [tags on this repository](https://github.com/alexandrac1420/Seguridad_Nube.git).
 
 ## Authors
 
